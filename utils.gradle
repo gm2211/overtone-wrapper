@@ -1,6 +1,9 @@
-def appendToFile(file_path, line) {
+ext.appendToFile = { file_path, line ->
     def file = new File(file_path)
-    if (!file.text.contains(line)) {
+
+    if (!file.exists())
+        file.createNewFile()
+
+    if (!file.text.contains(line)) 
         file.append("\n" + line)
-    }
 }

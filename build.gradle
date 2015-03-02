@@ -14,8 +14,6 @@ apply plugin: "gitsemver"
 apply from: "idea.gradle"
 apply from: "utils.gradle"
 
-version semverVersion()
-
 repositories {
     jcenter()
     maven { url "https://clojars.org/repo" }
@@ -34,8 +32,12 @@ dependencies {
     testCompile "junit:junit:$junit_version"
 }
 
+project.ext {
+    overtoneLibsDir = "/libs/overtone"
+}
+
 task explodeDeps(type: Copy) {
-    def overtoneFolder = project.getProjectDir().getPath() + "/libs/overtone"
+    def overtoneFolder = "${project.getProjectDir().getPath()}/src/main/resources$overtoneLibsDir"
 
     // Extracting native libraries for scsynth
     configurations.runtime.filter { it.name.contains ("scsynth") }.each {
@@ -44,7 +46,10 @@ task explodeDeps(type: Copy) {
         }
         into "$overtoneFolder"
     }
-    def native_lib_path = "nativeLibrariesPath: native/macosx/x86_64"
+}
+
+task configureWrapper {
+    def native_lib_path = "nativeLibrariesPath: $project.overtoneLibsDir/native/macosx/x86_64"
 
     // Add native libraries path to wrapper configuration
     appendToFile("${project.getProjectDir().getPath()}/$wrapper_config_path", native_lib_path)
@@ -62,4 +67,5 @@ task integrationTest(type: Test) {
     }
 }
 
-build.dependsOn explodeDeps
+configureWrapper.dependsOn explodeDeps
+build.dependsOn configureWrapper

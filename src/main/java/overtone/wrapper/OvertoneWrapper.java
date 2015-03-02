@@ -9,6 +9,7 @@ import clojure.lang.Compiler;
 import clojure.lang.IFn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import overtone.utils.ResourceUtils;
 
 public class OvertoneWrapper {
     public static final String USE_OVERTONE_LIVE = "(use 'overtone.live)";
@@ -19,19 +20,24 @@ public class OvertoneWrapper {
     private final OvertoneWrapperConfig config;
 
     public OvertoneWrapper() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-        URL defaultConfigFilePath = getClass().getClassLoader().getResource(DEFAULT_CONFIG);
-        config = objectMapper.readValue(defaultConfigFilePath, OvertoneWrapperConfig.class);
+        config = readConfigFile();
         initOvertoneServer();
     }
 
-    public OvertoneWrapper(OvertoneWrapperConfig config) {
+    private OvertoneWrapperConfig readConfigFile() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        URL defaultConfigFilePath = getClass().getClassLoader().getResource(DEFAULT_CONFIG);
+        return objectMapper.readValue(defaultConfigFilePath, OvertoneWrapperConfig.class);
+    }
+
+    public OvertoneWrapper(OvertoneWrapperConfig config) throws IOException {
         this.config = config;
         initOvertoneServer();
     }
 
-    private void initOvertoneServer() {
-        System.setProperty(JAVA_LIBRARY_PATH, config.getNativeLibrariesPath());
+    private void initOvertoneServer() throws IOException {
+        String nativeLibrariesPath = ResourceUtils.copyResourcesToTempDir(config.getNativeLibrariesPath());
+        System.setProperty(JAVA_LIBRARY_PATH, nativeLibrariesPath);
         importLibrary(OVERTONE_LIVE);
         sendCommand(USE_OVERTONE_LIVE);
     }
