@@ -1,0 +1,6 @@
+def appendToFile(file_path, line) {
+    def file = new File(file_path)
+    if (!file.text.contains(line)) {
+        file.append("\n" + line)
+    }
+}

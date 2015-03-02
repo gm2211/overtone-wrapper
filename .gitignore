@@ -1,0 +1,12 @@
+build/
+out/
+libs/
+.idea/
+.gradle/
+pom.xml
+pom.xml.asc
+*.jar
+*.class
+*.iml
+*.ipr
+*.iws

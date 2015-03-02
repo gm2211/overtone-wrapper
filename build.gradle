@@ -1,0 +1,65 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.palantir:gradle-gitsemver:$git_semver_version"
+    }
+}
+
+// Plugins
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "gitsemver"
+apply from: "idea.gradle"
+apply from: "utils.gradle"
+
+version semverVersion()
+
+repositories {
+    jcenter()
+    maven { url "https://clojars.org/repo" }
+}
+
+dependencies {
+    compile "overtone:overtone:$overtone_version"
+    compile "org.clojure:clojure:$clojure_version"
+    compile "com.google.guava:guava:$guava_version"
+
+    // Serialisation
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jackson_yaml_version"
+
+
+    // Tests
+    testCompile "junit:junit:$junit_version"
+}
+
+task explodeDeps(type: Copy) {
+    def overtoneFolder = project.getProjectDir().getPath() + "/libs/overtone"
+
+    // Extracting native libraries for scsynth
+    configurations.runtime.filter { it.name.contains ("scsynth") }.each {
+        from zipTree(it).matching  {
+            include "native/macosx/**"
+        }
+        into "$overtoneFolder"
+    }
+    def native_lib_path = "nativeLibrariesPath: native/macosx/x86_64"
+
+    // Add native libraries path to wrapper configuration
+    appendToFile("${project.getProjectDir().getPath()}/$wrapper_config_path", native_lib_path)
+}
+
+test {
+    useJUnit {
+        excludeCategories "overtone.wrapper.SlowTest"
+    }
+}
+
+task integrationTest(type: Test) {
+    useJUnit {
+        includeCategories "overtone.wrapper.SlowTest"
+    }
+}
+
+build.dependsOn explodeDeps
