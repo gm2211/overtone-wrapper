@@ -16,6 +16,7 @@ public class OvertoneWrapper {
     public static final String OVERTONE_LIVE = "overtone.live";
     public static final String JAVA_LIBRARY_PATH = "java.library.path";
     public static final String DEFAULT_CONFIG = "wrapper-config.yml";
+    public static final String DEMO = "(demo (sin-osc))";
 
     private final OvertoneWrapperConfig config;
 
@@ -27,6 +28,7 @@ public class OvertoneWrapper {
     private OvertoneWrapperConfig readConfigFile() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         URL defaultConfigFilePath = getClass().getClassLoader().getResource(DEFAULT_CONFIG);
+        System.out.println(defaultConfigFilePath);
         return objectMapper.readValue(defaultConfigFilePath, OvertoneWrapperConfig.class);
     }
 

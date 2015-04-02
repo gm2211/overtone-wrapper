@@ -1,16 +1,6 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath "com.palantir:gradle-gitsemver:$git_semver_version"
-    }
-}
-
 // Plugins
 apply plugin: "java"
 apply plugin: "idea"
-apply plugin: "gitsemver"
 apply from: "idea.gradle"
 apply from: "utils.gradle"
 
@@ -69,3 +59,4 @@ task integrationTest(type: Test) {
 
 configureWrapper.dependsOn explodeDeps
 build.dependsOn configureWrapper
+tasks.idea.dependsOn configureWrapper

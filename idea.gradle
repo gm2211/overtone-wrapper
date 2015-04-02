@@ -1,10 +1,8 @@
 idea {
-    project {
-        languageLevel = '8'
-    }
     module {
         sourceDirs += file('src/main/scala')
         sourceDirs += file('src/main/java')
+        sourceDirs += file('src/main/resources')
 
         testSourceDirs += file('src/test/scala')
         testSourceDirs += file('src/test/java')
