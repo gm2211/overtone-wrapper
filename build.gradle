@@ -10,7 +10,8 @@ buildscript {
 // Plugins
 apply plugin: "java"
 apply plugin: "idea"
-apply plugin: "gitsemver"
+// Cannot use semver if this project is used as a gradle sub-project
+//apply plugin: "gitsemver"
 apply from: "idea.gradle"
 apply from: "utils.gradle"
 

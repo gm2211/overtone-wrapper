@@ -1,7 +1,9 @@
 idea {
-    project {
-        languageLevel = '8'
-    }
+// The following 3 lines must stay commented out if this is used as a gradle
+// sub-project
+//    project {
+//        languageLevel = '8'
+//    }
     module {
         sourceDirs += file('src/main/scala')
         sourceDirs += file('src/main/java')
