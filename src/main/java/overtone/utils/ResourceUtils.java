@@ -3,6 +3,7 @@ package overtone.utils;
 import java.io.File;
 import java.io.IOException;
 
+import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 
 public class ResourceUtils {
@@ -22,7 +23,7 @@ public class ResourceUtils {
 
         File resourceDir = new File(ResourceUtils.class.getResource(resourceDirPath).getPath());
 
-        for (File file : Files.fileTreeTraverser().breadthFirstTraversal(resourceDir).filter(File::isFile)) {
+        for (File file : Iterables.filter(Files.fileTraverser().breadthFirst(resourceDir), File::isFile)) {
             File dest = new File(tempDir.getAbsolutePath(), file.getName());
             Files.copy(file, dest);
         }
